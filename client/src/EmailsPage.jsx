@@ -229,6 +229,7 @@ import {
   getClassifiedEmails,
   saveClassifiedEmails,
 } from "./storageHelpers";
+import EmailDetailsSidebar from "./EmailDetailsSidebar";
 
 export default function EmailsPage() {
   const [emails, setEmails] = useState([]);
@@ -238,6 +239,7 @@ export default function EmailsPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isClassifying, setIsClassifying] = useState(false);
   const [classified, setClassified] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState(null);
   const navigate = useNavigate();
 
   // Load cached emails and classifications
@@ -318,7 +320,7 @@ export default function EmailsPage() {
       : emails.slice(0, maxEmails);
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+    <div style={{ padding: "2rem", fontFamily: "sans-serif", position: "relative" }}>
       <h2>📬 Your Latest Emails</h2>
       <button
         onClick={() => navigate("/")}
@@ -441,12 +443,17 @@ export default function EmailsPage() {
           {displayedEmails.map((email, index) => (
             <div
               key={index}
+              onClick={() => setSelectedEmail(email)}
               style={{
                 border: "1px solid #ddd",
                 borderRadius: "8px",
                 padding: "1rem",
                 background: "#fafafa",
+                cursor: "pointer",
+                transition: "background 0.2s",
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f0f0")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#fafafa")}
             >
               <h4>{email.subject}</h4>
               <p>
@@ -461,6 +468,14 @@ export default function EmailsPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Right Sidebar for Email Details */}
+      {selectedEmail && (
+        <EmailDetailsSidebar
+          email={selectedEmail}
+          onClose={() => setSelectedEmail(null)}
+        />
       )}
     </div>
   );
