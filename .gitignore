@@ -1,1 +1,34 @@
+# Node modules
+node_modules/
+frontend/node_modules/
+server/node_modules/
+
+# Environment files
+*.env
 **/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+
+# Coverage / test reports
+coverage/
+
+# Dependency lock (optional, depends on team)
+# package-lock.json
+# yarn.lock
