@@ -221,6 +221,9 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import EmailsPage from "./EmailsPage";
+import Dashboard from "./Dashboard";
+import { saveEmails, clearEmailCache } from "./storageHelpers";
+
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -280,6 +283,10 @@ function Home() {
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
+    localStorage.removeItem("emails");
+    localStorage.removeItem("classifiedEmails");
+    localStorage.removeItem("emailsMeta");
+    localStorage.removeItem("openai_api_key");
     setUser(null);
   };
 
@@ -297,7 +304,11 @@ function Home() {
     setKeySaved(false);
   };
 
-  const fetchEmails = async () => {
+const fetchEmails = async () => {
+  try {
+    // optional: clear old cache before fetching
+    clearEmailCache();
+
     const res = await fetch("http://localhost:5000/fetch-emails", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -310,13 +321,18 @@ function Home() {
     const data = await res.json();
     console.log("Fetched emails:", data.emails);
 
-    if (data.emails) {
-      localStorage.setItem("emails", JSON.stringify(data.emails));
+    if (data.emails && data.emails.length > 0) {
+      saveEmails(data.emails);
       navigate("/emails");
     } else {
-      alert("Failed to fetch emails");
+      alert("No emails found or failed to fetch emails.");
     }
-  };
+  } catch (err) {
+    console.error("Error fetching emails:", err);
+    alert("Failed to fetch emails.");
+  }
+};
+
 
   return (
     <div style={{ textAlign: "center", marginTop: "4rem", fontFamily: "sans-serif" }}>
@@ -436,6 +452,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/emails" element={<EmailsPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

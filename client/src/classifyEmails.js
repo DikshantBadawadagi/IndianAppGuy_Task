@@ -1,3 +1,4 @@
+// src/classifyEmails.js
 export default async function classifyEmails(emails, apiKey) {
   const prompt = `
 You are an AI email classifier. Classify each email into one of these categories:
@@ -11,7 +12,7 @@ Rules:
 - Spam: Unwanted or phishing emails.
 - General: Anything else.
 
-Respond in pure JSON only. No code blocks, no explanations.
+Respond in JSON only.
 Format:
 [
   { "subject": "Email subject", "category": "Important" },
@@ -44,18 +45,23 @@ ${emails
   });
 
   const data = await response.json();
-  let text = data.choices?.[0]?.message?.content?.trim();
+  let text = data.choices?.[0]?.message?.content?.trim() || "";
 
-  // 🧹 Clean up possible markdown code block
   if (text.startsWith("```")) {
     text = text.replace(/```json/i, "").replace(/```/g, "").trim();
   }
 
   try {
     const parsed = JSON.parse(text);
-    return parsed.map((item) => item.category);
+    return emails.map((email, i) => ({
+      id: i,
+      subject: email.subject,
+      from: email.from,
+      snippet: email.snippet,
+      category: parsed[i]?.category || "General",
+    }));
   } catch (err) {
-    console.error("Failed to parse response:", text);
-    throw new Error("Invalid JSON from OpenAI");
+    console.error("Failed to parse OpenAI response:", text);
+    throw new Error("Invalid JSON returned from OpenAI");
   }
 }
