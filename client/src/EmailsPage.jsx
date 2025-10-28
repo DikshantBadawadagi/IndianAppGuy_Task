@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import classifyEmails from "./classifyEmails"
-import { getStoredEmails, getClassifiedEmails, saveClassifiedEmails } from "./storageHelpers"
+import classifyEmails from "./helpers/classifyEmails"
+import { getStoredEmails, getClassifiedEmails, saveClassifiedEmails } from "./helpers/storageHelpers"
 import EmailDetailsSidebar from "./EmailDetailsSidebar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
