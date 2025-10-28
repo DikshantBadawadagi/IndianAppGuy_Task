@@ -39,7 +39,6 @@ export default function Navbar({ user }) {
     <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
       <div className="max-w-7xl mx-auto">
         <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-full px-8 py-4 backdrop-blur-md border border-slate-800 shadow-2xl flex items-center justify-between">
-          {/* Left Side - Logo and User Info */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3 bg-slate-800 rounded-full px-4 py-2 border border-slate-700">
               <Mail className="w-5 h-5 text-slate-300" />
@@ -62,7 +61,6 @@ export default function Navbar({ user }) {
             )}
           </div>
 
-          {/* Right Side - Logout Button */}
           {user && (
             <AlertDialog open={showLogoutAlert} onOpenChange={setShowLogoutAlert}>
               <Button

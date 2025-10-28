@@ -1,169 +1,3 @@
-// // import { useEffect, useState } from "react";
-// // import { useNavigate } from "react-router-dom";
-
-// // export default function Dashboard() {
-// //   const [classifiedEmails, setClassifiedEmails] = useState([]);
-// //   const navigate = useNavigate();
-
-// //   useEffect(() => {
-// //     const data = localStorage.getItem("classifiedEmails");
-// //     if (data) {
-// //       setClassifiedEmails(JSON.parse(data));
-// //     } else {
-// //       alert("No classified emails found. Please classify first!");
-// //       navigate("/emails");
-// //     }
-// //   }, [navigate]);
-
-// //   // Extract unique categories
-// //   const categories = [...new Set(classifiedEmails.map((e) => e.category))];
-
-// //   return (
-// //     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-// //       <h2>📊 Email Dashboard</h2>
-// //       <button
-// //         onClick={() => navigate("/emails")}
-// //         style={{
-// //           marginBottom: "1rem",
-// //           padding: "8px 16px",
-// //           borderRadius: "6px",
-// //           cursor: "pointer",
-// //         }}
-// //       >
-// //         ← Back to Emails
-// //       </button>
-
-// //       {categories.length === 0 ? (
-// //         <p>No categories found.</p>
-// //       ) : (
-// //         <div
-// //           style={{
-// //             display: "grid",
-// //             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-// //             gap: "1.5rem",
-// //           }}
-// //         >
-// //           {categories.map((cat) => (
-// //             <div
-// //               key={cat}
-// //               style={{
-// //                 background: "#f9f9f9",
-// //                 borderRadius: "10px",
-// //                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-// //                 padding: "1rem",
-// //               }}
-// //             >
-// //               <h3 style={{ color: "#007bff" }}>{cat}</h3>
-// //               {classifiedEmails
-// //                 .filter((e) => e.category === cat)
-// //                 .map((email, i) => (
-// //                   <div
-// //                     key={i}
-// //                     style={{
-// //                       marginTop: "0.8rem",
-// //                       padding: "0.5rem",
-// //                       borderBottom: "1px solid #ddd",
-// //                     }}
-// //                   >
-// //                     <h4>{email.subject}</h4>
-// //                     <p>
-// //                       <strong>From:</strong> {email.from}
-// //                     </p>
-// //                     <p>{email.snippet}</p>
-// //                   </div>
-// //                 ))}
-// //             </div>
-// //           ))}
-// //         </div>
-// //       )}
-// //     </div>
-// //   );
-// // }
-
-
-// // src/Dashboard.jsx
-// import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { getClassifiedEmails } from "./storageHelpers";
-
-// export default function Dashboard() {
-//   const [classifiedEmails, setClassifiedEmails] = useState([]);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const data = getClassifiedEmails();
-//     if (data.length > 0) {
-//       setClassifiedEmails(data);
-//     } else {
-//       alert("No classified emails found. Please classify first!");
-//       navigate("/emails");
-//     }
-//   }, [navigate]);
-
-//   const categories = [...new Set(classifiedEmails.map((e) => e.category))];
-
-//   return (
-//     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-//       <h2>📊 Email Dashboard</h2>
-//       <button
-//         onClick={() => navigate("/emails")}
-//         style={{
-//           marginBottom: "1rem",
-//           padding: "8px 16px",
-//           borderRadius: "6px",
-//           cursor: "pointer",
-//         }}
-//       >
-//         ← Back to Emails
-//       </button>
-
-//       {categories.length === 0 ? (
-//         <p>No categories found.</p>
-//       ) : (
-//         <div
-//           style={{
-//             display: "grid",
-//             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-//             gap: "1.5rem",
-//           }}
-//         >
-//           {categories.map((cat) => (
-//             <div
-//               key={cat}
-//               style={{
-//                 background: "#f9f9f9",
-//                 borderRadius: "10px",
-//                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-//                 padding: "1rem",
-//               }}
-//             >
-//               <h3 style={{ color: "#007bff" }}>{cat}</h3>
-//               {classifiedEmails
-//                 .filter((e) => e.category === cat)
-//                 .map((email, i) => (
-//                   <div
-//                     key={i}
-//                     style={{
-//                       marginTop: "0.8rem",
-//                       padding: "0.5rem",
-//                       borderBottom: "1px solid #ddd",
-//                     }}
-//                   >
-//                     <h4>{email.subject}</h4>
-//                     <p>
-//                       <strong>From:</strong> {email.from}
-//                     </p>
-//                     <p>{email.snippet}</p>
-//                   </div>
-//                 ))}
-//             </div>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -195,7 +29,6 @@ export default function Dashboard() {
 
   const categories = [...new Set(classifiedEmails.map((e) => e.category))]
 
-  // Calculate statistics
   const totalEmails = classifiedEmails.length
   const categoryStats = categories.map((cat) => ({
     name: cat,
@@ -203,7 +36,6 @@ export default function Dashboard() {
     percentage: Math.round((classifiedEmails.filter((e) => e.category === cat).length / totalEmails) * 100),
   }))
 
-  // Color mapping for categories
   const categoryColors = {
     Promotions: "bg-blue-500/20 text-blue-300 border-blue-500/30",
     Social: "bg-purple-500/20 text-purple-300 border-purple-500/30",
@@ -262,7 +94,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <Card
               className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm hover:border-slate-600/50 transition-all duration-300 animate-slide-up"
@@ -304,7 +135,6 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Category Distribution */}
           <Card
             className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm mb-8 animate-slide-up"
             style={{ animationDelay: "0.4s" }}
@@ -338,7 +168,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Category Cards Grid */}
           {categories.length === 0 ? (
             <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
               <CardContent className="pt-6">
