@@ -174,7 +174,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ArrowLeft, Mail, BarChart3, TrendingUp, AlertCircle } from "lucide-react"
-import Layout from "./Layout" 
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import Layout  from "./Layout"
 
 export default function Dashboard() {
   const [classifiedEmails, setClassifiedEmails] = useState([])
@@ -228,12 +229,12 @@ export default function Dashboard() {
 
   return (
     <Layout user={JSON.parse(localStorage.getItem("user") || "{}")}>
-      <div className="min-h-[calc(100vh-120px)] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 md:p-8">
+      <div className="min-h-[calc(100vh-120px)] bg-gradient-to-br from-slate-950 via-slate-950 to-slate-950 p-6 md:p-8">
         {/* Animated background elements */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-slate-800/10 rounded-full blur-3xl animate-pulse"></div>
           <div
-            className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-slate-700/10 rounded-full blur-3xl animate-pulse"
             style={{ animationDelay: "1s" }}
           ></div>
         </div>
@@ -352,7 +353,7 @@ export default function Dashboard() {
               {categories.map((cat, catIdx) => (
                 <Card
                   key={cat}
-                  className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm hover:border-slate-600/50 transition-all duration-300 overflow-hidden group animate-slide-up"
+                  className="bg-slate-900/50 border-slate-800 backdrop-blur-sm hover:border-slate-700 transition-all duration-300 overflow-hidden group animate-slide-up"
                   style={{ animationDelay: `${0.6 + catIdx * 0.1}s` }}
                 >
                   <CardHeader className="pb-4">
@@ -375,18 +376,50 @@ export default function Dashboard() {
                       {classifiedEmails
                         .filter((e) => e.category === cat)
                         .map((email, i) => (
-                          <div
-                            key={i}
-                            className="p-3 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-all duration-200 border border-slate-600/30 hover:border-slate-500/50 group/item"
-                          >
-                            <h4 className="font-semibold text-white text-sm group-hover/item:text-blue-300 transition-colors truncate">
-                              {email.subject}
-                            </h4>
-                            <p className="text-xs text-slate-400 mt-1 truncate">
-                              <span className="font-medium">From:</span> {email.from}
-                            </p>
-                            <p className="text-xs text-slate-500 mt-2 line-clamp-2">{email.snippet}</p>
-                          </div>
+                          <HoverCard key={i}>
+                            <HoverCardTrigger asChild>
+                              <div className="p-3 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 transition-all duration-200 border border-slate-700/30 hover:border-slate-600/50 group/item cursor-pointer">
+                                <h4 className="font-semibold text-white text-sm group-hover/item:text-slate-200 transition-colors truncate">
+                                  {email.subject}
+                                </h4>
+                                <p className="text-xs text-slate-400 mt-1 truncate">
+                                  <span className="font-medium">From:</span> {email.from}
+                                </p>
+                                <p className="text-xs text-slate-500 mt-2 line-clamp-2">{email.snippet}</p>
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-80 bg-slate-900 border-slate-800 p-4">
+                              <div className="space-y-3">
+                                <div>
+                                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                                    Subject
+                                  </p>
+                                  <p className="text-sm text-white font-medium mt-1">{email.subject}</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                  <div>
+                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">From</p>
+                                    <p className="text-xs text-slate-300 mt-1 truncate">{email.from}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">To</p>
+                                    <p className="text-xs text-slate-300 mt-1 truncate">{email.to || "N/A"}</p>
+                                  </div>
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Date</p>
+                                  <p className="text-xs text-slate-300 mt-1">{email.date || "N/A"}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                                    Category
+                                  </p>
+                                  <Badge className={`${getCategoryColor(cat)} border mt-1`}>{cat}</Badge>
+                                </div>
+                                <p className="text-xs text-slate-400 mt-2 line-clamp-3">{email.snippet}</p>
+                              </div>
+                            </HoverCardContent>
+                          </HoverCard>
                         ))}
                     </div>
                   </CardContent>

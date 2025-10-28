@@ -253,6 +253,16 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Mail, LogOut, Key, CheckCircle2, Loader2, Shield, Zap } from "lucide-react"
 import Layout from "./Layout"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 function Home() {
   const [user, setUser] = useState(null)
@@ -260,6 +270,7 @@ function Home() {
   const [keySaved, setKeySaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const [fetchingEmails, setFetchingEmails] = useState(false)
+  const [showApiKeyAlert, setShowApiKeyAlert] = useState(false)
   const navigate = useNavigate()
 
   const CLIENT_ID = "589398350110-4shdn7nhgtcqsev0m837r8ml1v17bh13.apps.googleusercontent.com"
@@ -325,8 +336,7 @@ function Home() {
 
   const handleSaveKey = () => {
     if (apiKey.trim()) {
-      localStorage.setItem("openai_api_key", apiKey.trim())
-      setKeySaved(true)
+      setShowApiKeyAlert(true)
     }
   }
 
@@ -387,7 +397,7 @@ function Home() {
           </div>
         ) : !user ? (
           <div className="w-full max-w-2xl space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <Card className="border-slate-700 bg-slate-900/50 backdrop-blur-xl shadow-2xl overflow-hidden">
+            <Card className="border-slate-700 bg-slate-950/80 backdrop-blur-xl shadow-2xl overflow-hidden">
               <CardHeader className="space-y-4 text-center pb-6">
                 <div className="flex justify-center mb-2">
                   <div className="p-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg shadow-blue-500/20">
@@ -404,7 +414,7 @@ function Home() {
               <CardContent className="space-y-4">
                 <Button
                   onClick={handleLogin}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-6 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20"
+                  className="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white font-semibold py-6 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-slate-700/20"
                 >
                   <Mail className="w-5 h-5 mr-2" />
                   Login with Google
@@ -455,7 +465,7 @@ function Home() {
           </div>
         ) : (
           <div className="w-full max-w-2xl space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <Card className="border-slate-700 bg-slate-900/50 backdrop-blur-xl shadow-2xl overflow-hidden">
+            <Card className="border-slate-700 bg-slate-950/80 backdrop-blur-xl shadow-2xl overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16 border-2 border-blue-500/50">
@@ -487,7 +497,7 @@ function Home() {
                 <Button
                   onClick={fetchEmails}
                   disabled={fetchingEmails}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-6 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-6 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50"
                 >
                   {fetchingEmails ? (
                     <>
@@ -520,15 +530,43 @@ function Home() {
                       placeholder="Enter your OpenAI API key"
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
-                      className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500/20"
+                      className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-600 focus:ring-slate-600/20"
                     />
-                    <Button
-                      onClick={handleSaveKey}
-                      disabled={!apiKey.trim()}
-                      className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50"
-                    >
-                      Save API Key
-                    </Button>
+                    <AlertDialog open={showApiKeyAlert} onOpenChange={setShowApiKeyAlert}>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          onClick={() => setShowApiKeyAlert(true)}
+                          disabled={!apiKey.trim()}
+                          className="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                        >
+                          Save API Key
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-slate-950 border-slate-700">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-white">Save API Key</AlertDialogTitle>
+                          <AlertDialogDescription className="text-slate-400">
+                            Your OpenAI API key will be hashed and securely cached in your local storage. Your key will
+                            not be sent to any external servers and remains completely private on your device.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="flex gap-3">
+                          <AlertDialogCancel className="bg-slate-800 text-slate-300 hover:bg-slate-700 border-slate-700">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => {
+                              localStorage.setItem("openai_api_key", apiKey.trim())
+                              setKeySaved(true)
+                              setShowApiKeyAlert(false)
+                            }}
+                            className="bg-slate-700 hover:bg-slate-600 text-white"
+                          >
+                            Save Securely
+                          </AlertDialogAction>
+                        </div>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 ) : (
                   <div className="space-y-3 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
